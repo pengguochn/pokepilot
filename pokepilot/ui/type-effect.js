@@ -641,8 +641,11 @@ function showDamageInfoDetail() {
             const baseSpd = atk?.base_stats?.speed ?? 0;
             const ev = atk?.evs?.speed ?? 0;
             const natureMult = typeof getNatureSpeedMultiplier === 'function' ? getNatureSpeedMultiplier(atk.nature_en) : 1.0;
-            const speed = Math.floor((baseSpd + 20 + ev) * natureMult);
-            const atkLabel = `${atkName} (速${speed})`;
+            const scarf = typeof isChoiceScarf === 'function' && isChoiceScarf(atk);
+            const baseSpeed = Math.floor((baseSpd + 20 + ev) * natureMult);
+            const speed = scarf ? Math.floor(baseSpeed * 1.5) : baseSpeed;
+            const speedLabel = scarf ? `围巾${speed}` : `速${speed}`;
+            const atkLabel = `${atkName} (${speedLabel})`;
             const moveName = d.priority > 0 ? `+${d.priority} ${d.moveName}` : d.moveName;
             const { label, color } = getDamageLabel(d.pctLow, d.pctHigh);
             const labelHtml = label ? `<span style="color:${color};font-weight:bold;margin-right:4px">${label}</span>` : '';
