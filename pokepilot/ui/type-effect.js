@@ -444,7 +444,7 @@ function calcDamage(attacker, defender, move){
                 spe: attacker.evs?.speed > 0 ? attacker.evs.speed * 8 - 4 : 0,
             },
             nature: (attacker.nature_en && attacker.nature_en[0]?.name) || attacker.nature || 'Hardy',
-            ability:attacker.ability[0].name,
+            ability: capitalize(attacker.ability[0].name),
              // 只有非mega石才会存在，mega石该字段直接不写
             ...(atkItemOpt ? { item: atkItemOpt } : {}),
         });
@@ -471,7 +471,7 @@ function calcDamage(attacker, defender, move){
                 spe: defender.evs?.speed > 0 ? defender.evs.speed * 8 - 4 : 0,
             },
             nature: (defender.nature_en && defender.nature_en[0]?.name) || defender.nature || 'Hardy',
-            ability:defender.ability[0].name,
+            ability: capitalize(defender.ability[0].name),
             ...(defItemOpt ? { item: defItemOpt } : {}),
             ignoreItemErrors: true, // 核心：关闭道具匹配校验，消除megaStone报错
         });
@@ -524,7 +524,11 @@ function calcDamage(attacker, defender, move){
     }
     return null;
 }
-
+// 单词首字母大写，其余小写
+function capitalize(str) {
+  if (!str) return str;
+  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+}
 function getDamageLabel(pctLow, pctHigh) {
   if (pctLow >= 100 && pctHigh >= 100) return { label: '确一', color: '#e74c3c' };
   if (pctHigh >= 100) return { label: '乱一', color: '#e74c3c' };
