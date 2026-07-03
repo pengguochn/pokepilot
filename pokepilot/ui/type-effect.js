@@ -1,3 +1,22 @@
+// ===== 特性对技能属性的修正映射（皮肤类特性）=====
+const PIXILATE_TYPE_MAP = {
+    'pixilate': 'Fairy',      // 妖精皮肤: 一般→妖精
+    'refrigerate': 'Ice',     // 冰冻皮肤: 一般→冰
+    'aerialate': 'Flying',    // 飞行皮肤: 一般→飞行
+    'galvanize': 'Electric',  // 电气皮肤: 一般→电
+    'liquidvoice': 'Water',   // 液体声音: 一般→水
+};
+
+function getEffectiveMoveType(move, attacker) {
+    const originalType = (move.type || '').toLowerCase();
+    if (originalType !== 'normal') return move.type || '';
+
+    const ability = attacker?.ability?.[0]?.name?.toLowerCase();
+    if (!ability) return move.type || '';
+
+    return PIXILATE_TYPE_MAP[ability] || move.type || '';
+}
+
 // ===== 查看伤害克制关系=====
 function viewTypeEffectiveness(){
     const overlay = document.getElementById('type-effect-overlay');
@@ -73,7 +92,7 @@ function viewTypeEffectiveness(){
                 <div class="effect-moves">
                     ${(myPokemon.moves || []).map(m => {
                         const moveName = m.name_zh || m.name || '';
-                        const moveType = m.type || '';
+                        const moveType = getEffectiveMoveType(m, myPokemon);
                         const typeId = TYPE_ID_MAP[moveType] || 1;
                         const power = m.power !== null ? m.power : '-';
                         const accuracy = m.accuracy !== null ? m.accuracy : '-';
@@ -90,7 +109,7 @@ function viewTypeEffectiveness(){
             const damageHtml = `
                 <div class="effect-damage-grid">
                     ${(myPokemon.moves || []).map(m => {
-                        const moveType = (m.type || '').toLowerCase();
+                        const moveType = getEffectiveMoveType(m, myPokemon).toLowerCase();
                         const category = m.category;
                         const moveName = m.name_zh || m.name || '';
                         return `<div class="effect-damage-row" title="${moveName}">
@@ -135,7 +154,7 @@ function viewTypeEffectiveness(){
             const damageHtml = `
                 <div class="effect-damage-grid">
                     ${(oppPokemon.moves || []).map(m => {
-                        const moveType = (m.type || '').toLowerCase();
+                        const moveType = getEffectiveMoveType(m, oppPokemon).toLowerCase();
                         const category = m.category;
                         const moveName = m.name_zh || m.name || '';
                         return `<div class="effect-damage-row" title="${moveName}">
@@ -163,7 +182,7 @@ function viewTypeEffectiveness(){
                 <div class="effect-moves">
                     ${(oppPokemon.moves || []).map(m => {
                         const moveName = m.name_zh || m.name || '';
-                        const moveType = m.type || '';
+                        const moveType = getEffectiveMoveType(m, oppPokemon);
                         const typeId = TYPE_ID_MAP[moveType] || 1;
                         const power = m.power !== null ? m.power : '-';
                         const accuracy = m.accuracy !== null ? m.accuracy : '-';
